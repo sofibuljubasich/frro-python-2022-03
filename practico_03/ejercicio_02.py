@@ -2,7 +2,9 @@
 
 
 class Articulo:
-    last_id = 1
+
+    idIncrement = 1
+    
     """Clase con "nombre" como variable de instancia y un id incremental
     generado automáticamente.
 
@@ -13,8 +15,8 @@ class Articulo:
 
     def __init__(self, nombre='unknown'):
         self.nombre = nombre
-        self.id = Articulo.last_id
-        Articulo.last_id = Articulo.last_id + 1
+        self.id = Articulo.idIncrement
+        Articulo.idIncrement =+ 1
 
     @classmethod
     def last_id(cls):

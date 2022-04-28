@@ -11,9 +11,28 @@ class Auto:
     
     Referencia: https://docs.python.org/3/library/functions.html#property"""
 
-    # Completar
+    def __init__(self,nombre,precio=0):
+        self._nombre = nombre
+        self._precio = precio
 
+    def _get_marca(self):
+        return self._nombre.title()
+    
 
+    def _get_precio(self):
+        return round(self._precio,2)
+    
+    def _set_precio(self,value):
+        self._precio = value
+    
+    nombre = property(
+        fget=_get_marca,
+    )
+
+    precio = property(
+        fget=_get_precio,
+        fset = _set_precio,
+    )
 # NO MODIFICAR - INICIO
 auto = Auto("Ford", 12_875.456)
 
@@ -35,7 +54,7 @@ except AttributeError:
 
 from dataclasses import dataclass
 
-@dataclass
+@dataclass(init)
 class Auto:
     """Re-Escribir utilizando DataClasses"""
 
