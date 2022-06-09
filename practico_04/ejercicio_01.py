@@ -14,7 +14,13 @@ def crear_tabla():
         - DNI: Int()
         - Altura: Int()
     """
-    conn.execute('''CREATE TABLE Persona (IdPersona int PRIMARY KEY, Nombre Char(30), FechaNacimiento text, DNI int, Altura int)''')
+    conn = sqlite3.connect('practica4.db')
+
+    cursor = conn.cursor()
+
+    cursor.execute('''CREATE TABLE IF NOT EXISTS Persona (IdPersona INT PRIMARY KEY, Nombre VARCHAR(30), FechaNacimiento text, DNI INT, Altura INT)''')
+    
+    cursor.close()
     conn.commit()
     conn.close()
 
