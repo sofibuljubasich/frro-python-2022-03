@@ -11,27 +11,25 @@ def buscar_persona(id_persona):
     persona basado en su id. El return es una tupla que contiene sus campos: 
     id, nombre, nacimiento, dni y altura. Si no encuentra ningun registro, 
     devuelve False."""
-    conn = sqlite3.connect('personas.db')
+    conn = sqlite3.connect('database.db')
+    conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
-
-    try:
-        rs = cursor.execute('''SELECT * FROM Persona WHERE IdPersona= ?''', (id_persona, )).fetchone()
-        conn.commit()
-    except sqlite3.Error as error:
-        raise error
-
-    finally:
-        cursor.close()
-        conn.close()
-
-    if rs is None:
-        return False
+    cursor.execute('''SELECT * FROM Persona WHERE IdPersona = ?''',(id_persona,))
+    
+    resultados = cursor.fetchone()
+    if resultados is None:
+        rs = False
     else:
-        return rs
+        rs = tuple(resultados)
+    cursor.close()
+    conn.close()
+    return rs
+    
 # NO MODIFICAR - INICIO
 @reset_tabla
 def pruebas():
     juan = buscar_persona(agregar_persona('juan perez', datetime.datetime(1988, 5, 15), 32165498, 180))
+    print(juan)
     assert juan == (1, 'juan perez', datetime.datetime(1988, 5, 15), 32165498, 180)
     assert buscar_persona(12345) is False
 
