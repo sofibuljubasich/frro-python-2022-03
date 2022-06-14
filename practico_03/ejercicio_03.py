@@ -1,6 +1,4 @@
 """Dataclasses"""
-
-
 class Persona:
     """Clase con los siguientes miembros:
 
