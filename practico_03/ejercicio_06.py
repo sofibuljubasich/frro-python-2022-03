@@ -14,6 +14,15 @@ class Article:
     def __init__(self, name: str) -> None:
         self.name = name
 
+ # NO MODIFICAR - FIN
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f"Article('{self.name}')"
+
+# NO MODIFICAR - INICIO
 class ShoppingCart:
     """Agregar los métodos que sean necesarios para que los test funcionen.
     Hint: los métodos necesarios son todos magic methods
@@ -42,12 +51,19 @@ class ShoppingCart:
 
         return self
     
+ # NO MODIFICAR - FIN 
+
     def __str__(self):
+        return f"{str([str(art) for art in self.articles])}"
 
-        return str(self.articles)
+    def __repr__(self) -> str:
+        return f"ShoppingCart({self.articles})"
 
-    def __repr__(self):
-        return self
+    def __eq__(self, other):
+        return self.articles == self.articles
+
+    def __add__(self, other: ShoppingCart):
+        return ShoppingCart(self.articles + other.articles)
         
 
 
