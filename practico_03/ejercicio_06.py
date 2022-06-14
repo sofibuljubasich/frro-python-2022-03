@@ -14,12 +14,6 @@ class Article:
     def __init__(self, name: str) -> None:
         self.name = name
 
-    # NO MODIFICAR - FIN
-
-    # Completar
-
-
-# NO MODIFICAR - INICIO
 class ShoppingCart:
     """Agregar los métodos que sean necesarios para que los test funcionen.
     Hint: los métodos necesarios son todos magic methods
@@ -33,10 +27,11 @@ class ShoppingCart:
             self.articles = articles
 
     def add(self, article: Article) -> ShoppingCart:
-        self.articles.append(article)
+        self.articles.append(article.name)
         return self
 
     def remove(self, remove_article: Article) -> ShoppingCart:
+        
         new_articles = []
 
         for article in self.articles:
@@ -46,10 +41,14 @@ class ShoppingCart:
         self.articles = new_articles
 
         return self
+    
+    def __str__(self):
 
-    # NO MODIFICAR - FIN
+        return str(self.articles)
 
-    # Completar
+    def __repr__(self):
+        return self
+        
 
 
 # NO MODIFICAR - INICIO
@@ -57,6 +56,7 @@ class ShoppingCart:
 manzana = Article("Manzana")
 pera = Article("Pera")
 tv = Article("Television")
+
 
 # Test de conversión a String
 assert str(ShoppingCart().add(manzana).add(pera)) == "['Manzana', 'Pera']"
