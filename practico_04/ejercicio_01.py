@@ -31,7 +31,7 @@ def borrar_tabla():
     conn.execute('''DROP TABLE Persona''')
     conn.commit()
     conn.close()
-borrar_tabla()
+
 
 # NO MODIFICAR - INICIO
 def reset_tabla(func):
