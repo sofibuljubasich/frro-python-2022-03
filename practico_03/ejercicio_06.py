@@ -14,10 +14,13 @@ class Article:
     def __init__(self, name: str) -> None:
         self.name = name
 
-    # NO MODIFICAR - FIN
+ # NO MODIFICAR - FIN
 
-    # Completar
+    def __str__(self):
+        return self.name
 
+    def __repr__(self):
+        return f"Article('{self.name}')"
 
 # NO MODIFICAR - INICIO
 class ShoppingCart:
@@ -33,10 +36,11 @@ class ShoppingCart:
             self.articles = articles
 
     def add(self, article: Article) -> ShoppingCart:
-        self.articles.append(article)
+        self.articles.append(article.name)
         return self
 
     def remove(self, remove_article: Article) -> ShoppingCart:
+        
         new_articles = []
 
         for article in self.articles:
@@ -46,10 +50,21 @@ class ShoppingCart:
         self.articles = new_articles
 
         return self
+    
+ # NO MODIFICAR - FIN 
 
-    # NO MODIFICAR - FIN
+    def __str__(self):
+        return f"{str([str(art) for art in self.articles])}"
 
-    # Completar
+    def __repr__(self) -> str:
+        return f"ShoppingCart({self.articles})"
+
+    def __eq__(self, other):
+        return self.articles == self.articles
+
+    def __add__(self, other: ShoppingCart):
+        return ShoppingCart(self.articles + other.articles)
+        
 
 
 # NO MODIFICAR - INICIO
@@ -57,6 +72,7 @@ class ShoppingCart:
 manzana = Article("Manzana")
 pera = Article("Pera")
 tv = Article("Television")
+
 
 # Test de conversión a String
 assert str(ShoppingCart().add(manzana).add(pera)) == "['Manzana', 'Pera']"
