@@ -21,23 +21,32 @@ def agregar_peso(id_persona, fecha, peso):
     - False en caso de no cumplir con alguna validacion."""
 
     persona = buscar_persona(id_persona)
-
+    idPeso = False
     if persona is not False:
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
-        cursor.execute('''SELECT MAX(fecha) FROM PersonaPeso WHERE idPersona = ? GROUP BY idPersona''', (id_persona,))
-        last_date = cursor.fetchone()
-        if fecha > last_date:
-            cursor.execute('''INSERT INTO PersonaPes(id_persona,fecha, peso) VALUES(?,?,?)''', (id_persona, fecha, peso))
+        try:
+            conn = sqlite3.connect('database.db')
+            cursor = conn.cursor()
+            cursor.execute('''SELECT MAX(Fecha) FROM PersonaPeso WHERE idPersona = ?''', (id_persona,))
+            last_date = cursor.fetchone()
+            if (last_date is None) or (fecha > last_date):
+                cursor.execute('''INSERT INTO PersonaPeso(idPersona,Fecha, Peso) VALUES(?,?,?)''', (id_persona, fecha, peso))
+                idPeso = cursor.lastrowid
+                conn.commit()
+            
+            else:
+                idPeso = False
+                
+        except Exception as e:
+            print("Error en la operacion",e)
+        finally:
             cursor.close()
-            conn.commit()
+
             conn.close()
-            return id_persona
-        else:
-            conn.close()
-            return False
+
     else:
-        return False
+        idPeso = False
+
+    return idPeso
 
 
        

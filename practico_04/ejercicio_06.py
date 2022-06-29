@@ -9,26 +9,37 @@ def crear_tabla_peso():
         - Fecha: Date()
         - Peso: Int()
     """
-    conn = sqlite3.connect('database.db')
+    try:
+        
+        conn = sqlite3.connect('database.db')
 
-    cursor = conn.cursor()
+        cursor = conn.cursor()
 
-    cursor.execute('''CREATE TABLE IF NOT EXISTS PersonaPeso (idPersona, FOREIGN KEY(idPersona) REFERENCES Persona(IdPersona),Fecha Date,Peso Int''')
-    
-    cursor.close()
-    conn.commit()
-    conn.close()
-
+        cursor.execute('''CREATE TABLE IF NOT EXISTS PersonaPeso
+        (idPersona,Fecha Date,Peso Int, FOREIGN KEY(idPersona) REFERENCES Persona(IdPersona))''')
+        conn.commit()
+    except Exception as e:
+        print("Error al crear tabla",e)
+    finally:
+        cursor.close()
+        conn.close()
+        
 
 def borrar_tabla_peso():
     """Implementar la funcion borrar_tabla, que borra la tabla creada 
     anteriormente."""
-    conn = sqlite3.connect('database.db')
+    try:
+        conn = sqlite3.connect('database.db')
 
-    cursor = conn.cursor()
-    conn.execute('''DROP TABLE PersonaPeso''')
-    conn.commit()
-    conn.close()
+        cursor = conn.cursor()
+        conn.execute('''DROP TABLE PersonaPeso''')
+        conn.commit()
+    except Exception as e:
+        print("Error al borrar tabla",e)
+    finally:
+        cursor.close()
+        conn.close()
+    
 
 
 # NO MODIFICAR - INICIO

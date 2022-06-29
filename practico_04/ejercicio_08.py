@@ -1,10 +1,13 @@
 """Base de datos SQL - Listar"""
 
 import datetime
+import sqlite3
 
-from practico_04.ejercicio_02 import agregar_persona
-from practico_04.ejercicio_06 import reset_tabla
-from practico_04.ejercicio_07 import agregar_peso
+from numpy import empty
+from ejercicio_02 import agregar_persona
+from ejercicio_06 import reset_tabla
+from ejercicio_07 import agregar_peso
+from ejercicio_04 import buscar_persona
 
 
 def listar_pesos(id_persona):
@@ -30,7 +33,24 @@ def listar_pesos(id_persona):
 
     - False en caso de no cumplir con alguna validacion.
     """
-    return []
+    persona = buscar_persona(id_persona)
+    if persona is not False:
+        try:
+            conn = sqlite3.connect('database.db')
+            cursor = conn.cursor()
+            pesos = cursor.execute('''SELECT Fecha,Peso FROM PersonaPeso WHERE idPersona = ?''', (id_persona,)).fetchall()
+
+        except Exception as e:
+            print("Error al buscar registros", e)
+        finally:
+            cursor.close()
+            conn.close()
+    else:
+        return False
+    if pesos is not empty:
+        return pesos
+    else:
+        return False
 
 
 # NO MODIFICAR - INICIO
@@ -40,6 +60,7 @@ def pruebas():
     agregar_peso(id_juan, datetime.datetime(2018, 5, 1), 80)
     agregar_peso(id_juan, datetime.datetime(2018, 6, 1), 85)
     pesos_juan = listar_pesos(id_juan)
+    print(pesos_juan)
     pesos_esperados = [
         ('2018-05-01', 80),
         ('2018-06-01', 85),

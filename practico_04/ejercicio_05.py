@@ -15,12 +15,17 @@ def actualizar_persona(id_persona, nombre, nacimiento, dni, altura):
     persona = buscar_persona(id_persona)
 
     if persona is not False:
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
-        cursor.execute('''UPDATE Persona SET IdPersona = ?, Nombre = ?, FechaNacimiento = ?,DNI=?,Altura = ? WHERE IdPersona = ?''',(id_persona,nombre,nacimiento,dni,altura,id_persona))
-        conn.commit()
-        conn.close()
-        return True
+        try:
+            conn = sqlite3.connect('database.db')
+            cursor = conn.cursor()
+            cursor.execute('''UPDATE Persona SET IdPersona = ?, Nombre = ?, FechaNacimiento = ?,DNI=?,Altura = ? WHERE IdPersona = ?''',(id_persona,nombre,nacimiento,dni,altura,id_persona))
+            conn.commit()
+            actualizado = True
+        except Exception as e:
+            print("No se pudo actualizar",e)
+        finally:
+            conn.close()
+            return True
     else:
         return False
 # NO MODIFICAR - INICIO

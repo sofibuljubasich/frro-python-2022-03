@@ -15,11 +15,12 @@ def borrar_persona(id_persona):
     conn = sqlite3.connect('database.db')
 
     cursor = conn.cursor()
-    DELETE = True
+    
 
-    cursor.execute('''SELECT * FROM Persona WHERE IdPersona= ?''',(id_persona,))
-    if cursor.fetchone() is None:
-        DELETE = False
+    persona = cursor.execute('''SELECT * FROM Persona WHERE IdPersona= ?''',(id_persona,)).fetchone()
+    if persona is None:
+        conn.commit()
+        return False
     else:
         try:
             cursor.execute('''DELETE FROM Persona where IdPersona = ?''', (id_persona,))
@@ -30,8 +31,8 @@ def borrar_persona(id_persona):
         finally:
             cursor.close()
             conn.close()
+        return True
     
-    return DELETE
 
 # NO MODIFICAR - INICIO
 @reset_tabla
