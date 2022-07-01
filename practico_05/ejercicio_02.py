@@ -1,3 +1,4 @@
+from importlib_metadata import metadata
 from setuptools import find_namespace_packages
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -9,12 +10,14 @@ from typing import List, Optional
 class DatosSocio():
 
     def __init__(self):
-        engine = create_engine('sqlite:///socios.db')
-        Base = declarative_base(engine)
-        Base.metadata.create_all(engine, tables=Socio.__tablename__)
-
-        db_session = sessionmaker(bind = engine)
-        self.session = db_session()
+        engine = create_engine('sqlite:///C:\\Users\\usuario.DESKTOP-FH5TFO6\\Documents\\sociosdb.db')
+        Base.metadata.bind = engine
+        Session = sessionmaker(bind=engine,expire_on_commit=False)
+        self.session = Session()
+        try:
+            Socio.__table__.create()
+        except Exception as e:
+            print("Error al crear tabla: ",e)
 
             
 
@@ -24,7 +27,8 @@ class DatosSocio():
         """
         #first()--> Returns None or the row
         try:
-            socio = self.session.query(Socio).filter(Socio.id_socio == id_socio).first()
+            
+            socio = self.session.query(Socio).filter(Socio.id == id_socio).first()
         except Exception as e:
             print("Error: ",e)
         finally:
@@ -87,14 +91,16 @@ class DatosSocio():
         fue exitoso.
         """
         try:
-            self.session.query(Socio).filter(Socio.id_socio == id_socio).delete()
+            s = self.session.query(Socio).filter(Socio.id==id_socio).first()
+            self.session.delete(s)
+            self.session.commit()
+
             rta = True
         except:
             self.session.rollback()
             rta = False
         finally:
            
-            self.session.commit()
             self.session.close()
         return rta
 
@@ -103,7 +109,7 @@ class DatosSocio():
         modificado.
         """
         try:
-            self.session.query(Socio).filter(Socio.id_socio == socio.id_socio).update({'dni': socio.dni,'nombre':socio.nombre,'apellido':socio.apellido})
+            self.session.query(Socio).filter(Socio.id == socio.id_socio).update({'dni': socio.dni,'nombre':socio.nombre,'apellido':socio.apellido})
             self.session.commit()
         except:
             self.session.rollback()
@@ -136,7 +142,8 @@ assert datos.baja(socio.id) == True
 
 # Test Consulta
 socio_2 = datos.alta(Socio(dni=12345679, nombre='Carlos', apellido='Perez'))
-assert datos.buscar(socio_2.id) == socio_2
+p = datos.buscar(socio_2.id)
+assert p == socio_2
 
 # Test Buscar DNI
 socio_2 = datos.alta(Socio(dni=12345670, nombre='Carlos', apellido='Perez'))

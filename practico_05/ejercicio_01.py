@@ -1,6 +1,8 @@
 """Base de Datos - Creación de Clase en ORM"""
 
 
+from enum import unique
+from numpy import unicode_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 
@@ -14,26 +16,15 @@ class Socio(Base):
         - nombre: string (longitud 250)
         - apellido: string (longitud 250)
     """
-    __tablename__ = 'socios'
+    __tablename__ = "socios"
 
-    id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True,unique = True)
     dni = Column(Integer, unique=True, nullable=False)
     nombre = Column(String(250), nullable=False)
     apellido = Column(String(250), nullable=False)
 
-    def __init__(self, dni, nombre, apellido):
-        self.id = id
-        self.dni = dni
-        self.nombre = nombre
-        self.apellido = apellido
-
     def __repr__(self):
-        return f"DNI: {self.dni}\nName: {self.nombre}\nSurname: {self.apellido}\n"
+        return f"ID: {self.id}\nDNI: {self.dni}\nName: {self.nombre}\nSurname: {self.apellido}\n"
 
 
-s1 = Socio(dni=11111, nombre='Jon', apellido='Snow')
-s2 = Socio(dni=11321, nombre='Albus', apellido='Dumbledore')
-
-print(s1)
-print(s2)
 
