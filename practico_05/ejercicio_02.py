@@ -1,4 +1,5 @@
 from importlib_metadata import metadata
+from numpy import delete
 from setuptools import find_namespace_packages
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -10,14 +11,14 @@ from typing import List, Optional
 class DatosSocio():
 
     def __init__(self):
-        engine = create_engine('sqlite:///C:\\Users\\usuario.DESKTOP-FH5TFO6\\Documents\\sociosdb.db')
-        Base.metadata.bind = engine
+        engine = create_engine('sqlite:///sociosdb.sqlite')
         Session = sessionmaker(bind=engine,expire_on_commit=False)
+        Base.metadata.create_all(engine)
         self.session = Session()
-        try:
+        """try:
             Socio.__table__.create()
         except Exception as e:
-            print("Error al crear tabla: ",e)
+            print("Error al crear tabla: ",e)"""
 
             
 
@@ -28,25 +29,27 @@ class DatosSocio():
         #first()--> Returns None or the row
         try:
             
-            socio = self.session.query(Socio).filter(Socio.id == id_socio).first()
+            socio = self.session.query(Socio).get(id_socio)
+            return socio
         except Exception as e:
             print("Error: ",e)
         finally:
             self.session.close()
-        return socio
+        
 
     def buscar_dni(self, dni_socio: int) -> Optional[Socio]:
         """Devuelve la instancia del socio, dado su dni. Devuelve None si no 
         encuentra nada.
         """
         try:
-            socio = self.session.query(Socio).filter(Socio.dni == dni_socio).first()
+            socio = self.session.query(Socio).filter_by(dni = dni_socio).first()
+            return socio
         except Exception as e:
             print("Error: ",e)
         finally:
             self.session.close()
     
-        return socio
+        
         
     def todos(self) -> List[Socio]:
         """Devuelve listado de todos los socios en la base de datos."""
@@ -54,6 +57,7 @@ class DatosSocio():
             socios = self.session.query(Socio).all()
         except Exception as e:
             print("Error: ",e)
+            socios = []
         finally:
             self.session.close()
         return socios
@@ -63,12 +67,14 @@ class DatosSocio():
         borrado fue exitoso.
         """
         try:
-            self.session.query(Socio).all().delete()
-            self.session.commit()
+            self.session.delete(Socio)
+            
             rta = True
         except:
             rta = False
+            self.session.rollback()
         finally:
+            self.session.commit()
             self.session.close()
         return rta
 
@@ -86,12 +92,13 @@ class DatosSocio():
             self.session.close()
 
         return socio
+
     def baja(self, id_socio: int) -> bool:
         """Borra el socio especificado por el id. Devuelve True si el borrado 
         fue exitoso.
         """
         try:
-            s = self.session.query(Socio).filter(Socio.id==id_socio).first()
+            s = self.buscar(id_socio)
             self.session.delete(s)
             self.session.commit()
 

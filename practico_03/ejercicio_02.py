@@ -16,11 +16,14 @@ class Articulo:
     def __init__(self, nombre='unknown'):
         self.nombre = nombre
         self.id = Articulo.idIncrement
-        Articulo.idIncrement =+ 1
+        Articulo.idIncrement += 1
+        
 
     @classmethod
     def last_id(cls):
-        return cls.last_id
+        
+        return cls.idIncrement-1
+        
 
 
 # NO MODIFICAR - INICIO
@@ -33,8 +36,8 @@ assert art1.nombre == "manzana"
 assert art2.nombre == "pera"
 assert art3.nombre == "tv"
 
-'''assert art1.id_ == 1
-assert art2.id_ == 2
-assert art3.id_ == 3
-assert Articulo._last_id == 3'''
+assert art1.id == 1
+assert art2.id == 2
+assert art3.id == 3
+assert Articulo.last_id() == 3
 # NO MODIFICAR - FIN
