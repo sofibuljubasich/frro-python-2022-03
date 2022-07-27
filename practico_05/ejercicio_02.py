@@ -1,10 +1,6 @@
-from importlib_metadata import metadata
-from numpy import delete
-from setuptools import find_namespace_packages
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, true
 from sqlalchemy.orm import sessionmaker
 from ejercicio_01 import Base, Socio
-from sqlalchemy.ext.declarative import declarative_base
 
 from typing import List, Optional
 
@@ -12,13 +8,14 @@ class DatosSocio():
 
     def __init__(self):
         engine = create_engine('sqlite:///sociosdb.sqlite')
-        Session = sessionmaker(bind=engine,expire_on_commit=False)
-        Base.metadata.create_all(engine)
-        self.session = Session()
-        """try:
-            Socio.__table__.create()
+        Base.metadata.bind = engine
+        db_session = sessionmaker()
+        db_session.bind = engine
+        self.session = db_session()
+        try:
+            Base.metadata.create_all(engine)
         except Exception as e:
-            print("Error al crear tabla: ",e)"""
+            print("Error al crear tabla: ",e)
 
             
 
@@ -28,13 +25,9 @@ class DatosSocio():
         """
         #first()--> Returns None or the row
         try:
-            
-            socio = self.session.query(Socio).get(id_socio)
-            return socio
+            return self.session.query(Socio).get(id_socio)
         except Exception as e:
             print("Error: ",e)
-        finally:
-            self.session.close()
         
 
     def buscar_dni(self, dni_socio: int) -> Optional[Socio]:
@@ -42,55 +35,41 @@ class DatosSocio():
         encuentra nada.
         """
         try:
-            socio = self.session.query(Socio).filter_by(dni = dni_socio).first()
-            return socio
+            return self.session.query(Socio).filter_by(dni = dni_socio).first()
         except Exception as e:
             print("Error: ",e)
-        finally:
-            self.session.close()
     
-        
         
     def todos(self) -> List[Socio]:
         """Devuelve listado de todos los socios en la base de datos."""
         try:
-            socios = self.session.query(Socio).all()
+            return self.session.query(Socio).all()
         except Exception as e:
             print("Error: ",e)
-            socios = []
-        finally:
-            self.session.close()
-        return socios
+        
 
     def borrar_todos(self) -> bool:
         """Borra todos los socios de la base de datos. Devuelve True si el 
         borrado fue exitoso.
         """
         try:
-            self.session.delete(Socio)
-            
+            self.session.query(Socio).delete()
             rta = True
         except:
             rta = False
             self.session.rollback()
         finally:
             self.session.commit()
-            self.session.close()
         return rta
-
 
 
     def alta(self, socio: Socio) -> Socio:
         """Agrega un nuevo socio a la tabla y lo devuelve"""
         try:
-
             self.session.add(socio)
             self.session.commit()
         except Exception as e:
             print("Error en el alta: ",e)
-        finally:
-            self.session.close()
-
         return socio
 
     def baja(self, id_socio: int) -> bool:
@@ -101,14 +80,10 @@ class DatosSocio():
             s = self.buscar(id_socio)
             self.session.delete(s)
             self.session.commit()
-
             rta = True
         except:
             self.session.rollback()
             rta = False
-        finally:
-           
-            self.session.close()
         return rta
 
     def modificacion(self, socio: Socio) -> Socio:
@@ -116,13 +91,10 @@ class DatosSocio():
         modificado.
         """
         try:
-            self.session.query(Socio).filter(Socio.id == socio.id_socio).update({'dni': socio.dni,'nombre':socio.nombre,'apellido':socio.apellido})
+            self.session.query(Socio).filter(Socio.id == socio.id).update({Socio.dni: socio.dni, Socio.nombre: socio.nombre, Socio.apellido: socio.apellido})
             self.session.commit()
         except:
             self.session.rollback()
-        finally:
-            self.session.close()
-
         return socio
         
     
@@ -130,9 +102,6 @@ class DatosSocio():
         """Devuelve el total de socios que existen en la tabla"""
         rows = self.session.query(Socio).count()
         return rows
-
-
-
 
 
 # NO MODIFICAR - INICIO

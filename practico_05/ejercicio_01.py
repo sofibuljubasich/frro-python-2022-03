@@ -1,13 +1,9 @@
 """Base de Datos - Creación de Clase en ORM"""
 
-
-from enum import unique
-from numpy import unicode_
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String
 
 Base = declarative_base()
-
 
 class Socio(Base):
     """Implementar un modelo Socio a traves de Alchemy que cuente con los siguientes campos:
