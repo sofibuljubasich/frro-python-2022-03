@@ -5,7 +5,6 @@ import unittest
 from practico_05.ejercicio_01 import Socio
 from practico_06.capa_negocio import NegocioSocio, LongitudInvalida
 
-
 class TestsNegocio(unittest.TestCase):
 
     def setUp(self):
